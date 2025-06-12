@@ -85,7 +85,7 @@ resource "google_cloudbuild_trigger" "cd_pipeline" {
 {% elif cookiecutter.datastore_type == "vertex_ai_vector_search" %}
     _VECTOR_SEARCH_INDEX           = resource.google_vertex_ai_index.vector_search_index_staging.id
     _VECTOR_SEARCH_INDEX_ENDPOINT  = resource.google_vertex_ai_index_endpoint.vector_search_index_endpoint_staging.id
-    _VECTOR_SEARCH_BUCKET          = "gs://${resource.google_storage_bucket.vector_search_data_bucket["staging"].name}"
+    _VECTOR_SEARCH_BUCKET          = resource.google_storage_bucket.vector_search_data_bucket["staging"].url
 
 {% endif %}
 {% endif %}
@@ -128,7 +128,7 @@ resource "google_cloudbuild_trigger" "deploy_to_prod_pipeline" {
 {% elif cookiecutter.datastore_type == "vertex_ai_vector_search" %}
     _VECTOR_SEARCH_INDEX           = resource.google_vertex_ai_index.vector_search_index_prod.id
     _VECTOR_SEARCH_INDEX_ENDPOINT  = resource.google_vertex_ai_index_endpoint.vector_search_index_endpoint_prod.id
-    _VECTOR_SEARCH_BUCKET          = "gs://${resource.google_storage_bucket.vector_search_data_bucket["prod"].name}"
+    _VECTOR_SEARCH_BUCKET          = resource.google_storage_bucket.vector_search_data_bucket["prod"].url
 {% endif %}
 {% endif %}
     # Your other Deploy to Prod Pipeline substitutions

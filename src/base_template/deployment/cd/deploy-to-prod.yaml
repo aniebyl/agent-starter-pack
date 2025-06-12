@@ -55,8 +55,7 @@ steps:
       - "$_REGION"
       - "--project"
       - $_PROD_PROJECT_ID
-      - "--update-env-vars"
-      - "COMMIT_SHA=${COMMIT_SHA}"
+
 {%- elif cookiecutter.deployment_target == 'agent_engine' %}
   - name: "python:3.11-slim" 
     id: install-dependencies

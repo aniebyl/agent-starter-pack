@@ -39,7 +39,7 @@ resource "google_cloud_run_v2_service" "app" {
 
       env {
         name  = "DATA_STORE_ID"
-        value = resource.google_discovery_engine_data_store.data_store_staging.data_store_id
+        value = resource.google_discovery_engine_data_store.data_store_dev.data_store_id
       }
 
       env {
@@ -49,17 +49,17 @@ resource "google_cloud_run_v2_service" "app" {
 {%- elif cookiecutter.datastore_type == "vertex_ai_vector_search" %}
       env {
         name  = "VECTOR_SEARCH_INDEX"
-        value = resource.google_vertex_ai_index.vector_search_index_staging.id
+        value = resource.google_vertex_ai_index.vector_search_index.id
       }
 
       env {
         name  = "VECTOR_SEARCH_INDEX_ENDPOINT"
-        value = resource.google_vertex_ai_index_endpoint.vector_search_index_endpoint_staging.id
+        value = resource.google_vertex_ai_index_endpoint.vector_search_index_endpoint.id
       }
 
       env {
         name  = "VECTOR_SEARCH_BUCKET"
-        value = "gs://${resource.google_storage_bucket.vector_search_data_bucket["staging"].name}"
+        value = "gs://${resource.google_storage_bucket.data_ingestion_PIPELINE_GCS_ROOT.name}"
       }
 {%- endif %}
 {%- endif %}

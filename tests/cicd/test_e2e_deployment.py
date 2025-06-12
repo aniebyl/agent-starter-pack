@@ -462,31 +462,6 @@ class TestE2EDeployment:
             ]:
                 if not env_project:
                     continue
-
-                if deployment_target == "cloud_run":
-                    logger.info(
-                        f"Checking for Cloud Run service {project_name} in project {env_project}..."
-                    )
-                    try:
-                        # Delete the service with the project name directly
-                        logger.info(f"Deleting Cloud Run service: {project_name}")
-                        run_command(
-                            [
-                                "gcloud",
-                                "run",
-                                "services",
-                                "delete",
-                                project_name,
-                                f"--project={env_project}",
-                                f"--region={region}",
-                                "--quiet",
-                            ],
-                            check=False,
-                        )
-                    except Exception as e:
-                        logger.error(
-                            f"Error cleaning up Cloud Run service {project_name}: {e}"
-                        )
                 elif deployment_target == "agent_engine":
                     logger.info(
                         f"Checking for Agent Engine service {project_name} in project {env_project}..."
