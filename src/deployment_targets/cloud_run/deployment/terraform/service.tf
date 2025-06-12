@@ -30,6 +30,7 @@ resource "google_cloud_run_v2_service" "app" {
 
   template {
     containers {
+      # Placeholder, will be replaced by the CI/CD pipeline
       image = "us-docker.pkg.dev/cloudrun/container/hello"
 
       resources {
@@ -38,7 +39,37 @@ resource "google_cloud_run_v2_service" "app" {
           memory = "8Gi"
         }
       }
+{%- if cookiecutter.data_ingestion %}
+{%- if cookiecutter.datastore_type == "vertex_ai_search" %}
 
+      env {
+        name  = "DATA_STORE_ID"
+        value = resource.google_discovery_engine_data_store.data_store_staging.data_store_id
+      }
+
+      env {
+        name  = "DATA_STORE_REGION"
+        value = var.data_store_region
+      }
+{%- elif cookiecutter.datastore_type == "vertex_ai_vector_search" %}
+      env {
+        name  = "VECTOR_SEARCH_INDEX"
+        value = resource.google_vertex_ai_index.vector_search_index_staging.id
+      }
+
+      env {
+        name  = "VECTOR_SEARCH_INDEX_ENDPOINT"
+        value = resource.google_vertex_ai_index_endpoint.vector_search_index_endpoint_staging.id
+      }
+
+      env {
+        name  = "VECTOR_SEARCH_BUCKET"
+        value = "gs://${resource.google_storage_bucket.vector_search_data_bucket["staging"].name}"
+      }
+{%- endif %}
+{%- endif %}
+
+      # Placeholder, will be replaced by the CI/CD pipeline
       env {
         name  = "COMMIT_SHA"
         value = ""
@@ -97,6 +128,8 @@ resource "google_cloud_run_v2_service" "app" {
     percent = 100
   }
 
+  # This lifecycle block prevents Terraform from overwriting the container image and environment variables
+  # when they are updated by Cloud Run deployments outside of Terraform (e.g., via CI/CD pipelines)
   lifecycle {
     ignore_changes = [
       template[0].containers[0].image,
