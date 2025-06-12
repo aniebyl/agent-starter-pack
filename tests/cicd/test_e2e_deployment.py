@@ -677,8 +677,9 @@ class TestE2EDeployment:
         """Get the project root directory"""
         return Path.cwd()
 
-    def update_datastore_name(self, project_root: Path, project_name: str) -> None:
-        """Update datastore name in dev and prod/staging env.tfvars"""
+    def update_session_db_flag(self, project_root: Path) -> None:
+        """Update create_session_db flag to true in dev and prod/staging env.tfvars
+        for testing purposes"""
         # Update dev env.tfvars
         dev_vars_path = (
             project_root / "deployment" / "terraform" / "dev" / "vars" / "env.tfvars"
@@ -688,17 +689,16 @@ class TestE2EDeployment:
             with open(dev_vars_path) as f:
                 content = f.read()
 
-            # Replace sample-datastore with project name
-            modified_content = content.replace("sample-datastore", project_name)
-            modified_content = modified_content.replace(
-                "sample-search-engine", project_name
+            # Replace create_session_db = false with create_session_db = true
+            modified_content = content.replace(
+                "create_session_db = false", "create_session_db = true"
             )
 
             # Write back modified content
             with open(dev_vars_path, "w") as f:
                 f.write(modified_content)
 
-            logger.info("✅ Updated datastore name in dev env.tfvars")
+            logger.info("✅ Updated create_session_db flag to true in dev env.tfvars")
 
         # Update prod/staging env.tfvars
         prod_vars_path = (
@@ -709,17 +709,16 @@ class TestE2EDeployment:
             with open(prod_vars_path) as f:
                 content = f.read()
 
-            # Replace sample-datastore with project name
-            modified_content = content.replace("sample-datastore", project_name)
-            modified_content = modified_content.replace(
-                "sample-search-engine", project_name
+            # Replace create_session_db = false with create_session_db = true
+            modified_content = content.replace(
+                "create_session_db = false", "create_session_db = true"
             )
 
             # Write back modified content
             with open(prod_vars_path, "w") as f:
                 f.write(modified_content)
 
-            logger.info("✅ Updated datastore name in prod/staging env.tfvars")
+            logger.info("✅ Updated create_session_db flag to true in prod/staging env.tfvars")
 
     @pytest.mark.flaky(reruns=2)
     @pytest.mark.parametrize(
@@ -799,8 +798,7 @@ class TestE2EDeployment:
                 cmd,
                 cwd=project_root,
             )
-            # Update datastore name in terraform variables to avoid conflicts
-            self.update_datastore_name(new_project_dir, unique_id)
+            self.update_session_db_flag(project_root=new_project_dir)
             # Setup CICD using CLI from the newly created project directory
             logger.info("\n🔧 Setting up CICD...")
             # Fetch GitHub username dynamically

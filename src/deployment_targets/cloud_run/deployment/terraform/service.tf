@@ -1,0 +1,109 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Get project information to access the project number
+data "google_project" "project" {
+  for_each = local.db_projects_to_create
+
+  project_id = local.deploy_project_ids[each.key]
+}
+
+resource "google_cloud_run_v2_service" "app" {
+  for_each = toset(keys(local.deploy_project_ids))
+
+  name                = var.project_name
+  location            = var.region
+  project             = local.deploy_project_ids[each.key]
+  deletion_protection = false
+  ingress             = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    containers {
+      image = "us-docker.pkg.dev/cloudrun/container/hello"
+
+      resources {
+        limits = {
+          cpu    = "4"
+          memory = "8Gi"
+        }
+      }
+
+      env {
+        name  = "COMMIT_SHA"
+        value = ""
+      }
+
+      dynamic "env" {
+        for_each = var.create_session_db ? [1] : []
+        content {
+          name  = "DB_HOST"
+          value = google_alloydb_instance.session_db_instance[each.key].ip_address
+        }
+      }
+
+      # Use a `dynamic` block for the DB password env var.
+      # This block is only included if the database is created.
+      dynamic "env" {
+        for_each = var.create_session_db ? [1] : []
+        content {
+          name = "DB_PASS"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.db_password[each.key].secret_id
+              version = "latest"
+            }
+          }
+        }
+      }
+    }
+
+    service_account                = google_service_account.cloud_run_app_sa[each.key].email
+    max_instance_request_concurrency = 40
+
+    scaling {
+      min_instance_count = 1
+      max_instance_count = 10
+    }
+
+    session_affinity = true
+
+    # dynamic block for VPC access
+    dynamic "vpc_access" {
+      for_each = var.create_session_db ? [1] : []
+      content {
+        network_interfaces {
+          # This was correct
+          network    = google_compute_network.default[each.key].id
+          # This is now corrected to point to the subnetwork resource
+          subnetwork = google_compute_subnetwork.default[each.key].id
+        }
+      }
+    }
+  }
+
+  traffic {
+    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+    percent = 100
+  }
+
+  lifecycle {
+    ignore_changes = [
+      template[0].containers[0].image,
+      template[0].containers[0].env,
+    ]
+  }
+
+  # Make dependencies conditional to avoid errors.
+  depends_on = [google_project_service.deploy_project_services]
+}

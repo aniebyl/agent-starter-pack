@@ -39,7 +39,7 @@ resource "google_cloudbuild_trigger" "pr_checks" {
   {% endif %}
   ]
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
-  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.shared_services]
+  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.deploy_project_services]
 }
 
 # b. Create CD pipeline trigger
@@ -91,7 +91,7 @@ resource "google_cloudbuild_trigger" "cd_pipeline" {
 {% endif %}
     # Your other CD Pipeline substitutions
   }
-  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.shared_services]
+  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.deploy_project_services]
 
 }
 
@@ -133,6 +133,6 @@ resource "google_cloudbuild_trigger" "deploy_to_prod_pipeline" {
 {% endif %}
     # Your other Deploy to Prod Pipeline substitutions
   }
-  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.shared_services]
+  depends_on = [resource.google_project_service.cicd_services, resource.google_project_service.deploy_project_services]
 
 }
