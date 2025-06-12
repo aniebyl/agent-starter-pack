@@ -42,9 +42,9 @@ trace.set_tracer_provider(provider)
 AGENT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 db_user = os.environ.get("DB_USER", "postgres")
+db_name = os.environ.get("DB_NAME", "postgres")
 db_pass = os.environ.get("DB_PASS")
 db_host = os.environ.get("DB_HOST")
-db_name = os.environ.get("DB_NAME", "postgres")
 
 # Set session_db_url if database credentials are available
 session_db_url = ""
