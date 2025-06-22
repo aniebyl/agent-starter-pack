@@ -111,7 +111,7 @@ If you already know the answer to a question, you can respond directly without u
 
 root_agent = Agent(
     name="root_agent",
-    model="gemini-2.0-flash",
+    model="gemini-2.5-pro-preview-05-06",
     instruction=instruction,
     tools=[retrieve_docs],
 )
