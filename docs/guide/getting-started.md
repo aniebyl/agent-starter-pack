@@ -7,22 +7,19 @@ This guide quickly walks you through setting up your first agent project.
 
 ### Prerequisites
 
-Ensure you have:
-
-1.  **Python 3.10+**
-2.  **Google Cloud SDK:** [Install Guide](https://cloud.google.com/sdk/docs/install).
-3.  **Terraform:** [Install Guide](https://developer.hashicorp.com/terraform/downloads).
+**Python 3.10+** | **Google Cloud SDK** [Install Guide](https://cloud.google.com/sdk/docs/install) | **Terraform** [Install Guide](https://developer.hashicorp.com/terraform/downloads) | **`uv` (automatically installed)** [Manual Install Guide](https://docs.astral.sh/uv/getting-started/installation/)
 
 ### 1. Install the Starter Pack
 
 ```bash
 # Create and activate a Python virtual environment (Recommended)
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install the package
 pip install agent-starter-pack
 ```
+Check the [Installation Guide](/guide/installation) for alternative installation methods.
 
 ### 2. Create Your Agent Project
 
@@ -66,10 +63,8 @@ Inside your new project directory (`my-awesome-agent`), you'll find:
 
 ### Next Steps
 
-You're ready to go!
+You're ready to go! See the [Development Guide](/guide/development-guide) for detailed instructions on extending, customizing and deploying your agent.
 
-*   **Customize:** Modify the code in `app/` to edit prompts, configure tools, adjust API endpoints, customize business logic, extend functionality!
-*   **Deploy in minutes:** Use the [setup-cicd](/cli/setup_cicd) command.
-*   **Customized the deployment:** Use Terraform in `deployment/` to deploy to Google Cloud or follow the deployment guide ([Deployment Guide](/guide/deployment)). 
-*   **Add Data (RAG):** Configure [Data Ingestion](/guide/data-ingestion).
-*   **Monitor:** Explore [Observability](/guide/observability) features.
+- **Add Data (RAG):** Configure [Data Ingestion](/guide/data-ingestion) for knowledge-based agents.
+- **Monitor Performance:** Explore [Observability](/guide/observability) features for production monitoring.
+- **Deploy to Production:** Follow the [Deployment Guide](/guide/deployment) to deploy your agent to Google Cloud.

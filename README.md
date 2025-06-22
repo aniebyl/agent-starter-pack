@@ -31,7 +31,7 @@ Ready to build your AI agent? Simply run this command:
 
 ```bash
 # Create and activate a Python virtual environment
-python -m venv venv && source venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 
 # Install the agent starter pack
 pip install agent-starter-pack
@@ -58,6 +58,7 @@ agent-starter-pack create my-agent -d agent_engine -a adk_base
 | Agent Name                  | Description                                                                                                                       |
 |-----------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `adk_base`      | A base ReAct agent implemented using Google's [Agent Development Kit](https://github.com/google/adk-python) |
+| `adk_gemini_fullstack` | A production-ready fullstack research agent with Gemini that demonstrates complex agentic workflows, modular agent design, and Human-in-the-Loop steps. [ADK Samples](https://github.com/google/adk-samples/tree/main/python/agents/gemini-fullstack) |
 | `agentic_rag` | A RAG agent for document retrieval and Q&A. Supporting [Vertex AI Search](https://cloud.google.com/generative-ai-app-builder/docs/enterprise-search-introduction) and [Vector Search](https://cloud.google.com/vertex-ai/docs/vector-search/overview).       |
 | `langgraph_base_react`      | An agent implementing a base ReAct agent using LangGraph |
 | `crewai_coding_crew`       | A multi-agent system implemented with CrewAI created to support coding activities       |
